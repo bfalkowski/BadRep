@@ -32,6 +32,10 @@ MANIFEST
 *.manifest
 *.spec
 
+# ReviewLab specific
+ground_truth/
+reports/
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
