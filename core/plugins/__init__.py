@@ -6,16 +6,16 @@ bug injection and analysis capabilities.
 """
 
 from .base import LanguagePlugin, PluginManager
-from .java import JavaPlugin
-from .python import PythonPlugin
-from .javascript import JavaScriptPlugin
 from .go import GoPlugin
+from .java import JavaPlugin
+from .javascript import JavaScriptPlugin
+from .python import PythonPlugin
 
 __all__ = [
-    'LanguagePlugin',
-    'PluginManager',
-    'JavaPlugin',
-    'PythonPlugin',
-    'JavaScriptPlugin',
-    'GoPlugin'
+    "LanguagePlugin",
+    "PluginManager",
+    "JavaPlugin",
+    "PythonPlugin",
+    "JavaScriptPlugin",
+    "GoPlugin",
 ]

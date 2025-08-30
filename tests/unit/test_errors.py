@@ -2,17 +2,24 @@
 Unit tests for the error handling system.
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add the project root to the Python path
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 from core.errors import (
-    ReviewLabError, ConfigurationError, LanguageError, GitError,
-    InjectionError, EvaluationError, SecurityError, ErrorHandler
+    ConfigurationError,
+    ErrorHandler,
+    EvaluationError,
+    GitError,
+    InjectionError,
+    LanguageError,
+    ReviewLabError,
+    SecurityError,
 )
 
 
@@ -84,7 +91,7 @@ def test_error_handler_format_error():
     """Test ErrorHandler.format_error_for_logging."""
     error = ConfigurationError("Test error", {"key": "value"})
     error_info = ErrorHandler.format_error_for_logging(error, "test_context")
-    
+
     assert error_info["context"] == "test_context"
     assert error_info["error_type"] == "ConfigurationError"
     assert error_info["message"] == "[CONFIG_ERROR] Test error"
@@ -96,7 +103,7 @@ def test_error_handler_format_generic_error():
     """Test ErrorHandler.format_error_for_logging with generic error."""
     error = ValueError("Generic error")
     error_info = ErrorHandler.format_error_for_logging(error, "test_context")
-    
+
     assert error_info["context"] == "test_context"
     assert error_info["error_type"] == "ValueError"
     assert error_info["message"] == "Generic error"
