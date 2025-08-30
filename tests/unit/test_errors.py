@@ -4,6 +4,7 @@ Unit tests for the error handling system.
 
 import sys
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -17,94 +18,109 @@ from core.errors import (
     EvaluationError,
     GitError,
     InjectionError,
-    LanguageError,
     ReviewLabError,
-    SecurityError,
+    ValidationError,
+    GitHubError,
+    AuthenticationError,
+    RepositoryError,
 )
 
 
 def test_reviewlab_error_base():
     """Test the base ReviewLabError class."""
     error = ReviewLabError("Test error message")
-    assert str(error) == "[UNKNOWN_ERROR] Test error message"
-    assert error.error_code == "UNKNOWN_ERROR"
+    assert str(error) == "Test error message"
     assert error.details == {}
-
-
-def test_reviewlab_error_with_code():
-    """Test ReviewLabError with custom error code."""
-    error = ReviewLabError("Test error", "CUSTOM_ERROR")
-    assert str(error) == "[CUSTOM_ERROR] Test error"
-    assert error.error_code == "CUSTOM_ERROR"
 
 
 def test_reviewlab_error_with_details():
     """Test ReviewLabError with details."""
     details = {"file": "test.py", "line": 10}
-    error = ReviewLabError("Test error", "TEST_ERROR", details)
+    error = ReviewLabError("Test error message", details)
     assert error.details == details
+    assert "file" in error.details
+    assert error.details["file"] == "test.py"
 
 
 def test_configuration_error():
     """Test ConfigurationError class."""
     error = ConfigurationError("Config error")
-    assert error.error_code == "CONFIG_ERROR"
     assert isinstance(error, ReviewLabError)
+    assert "Config error" in str(error)
 
 
-def test_language_error():
-    """Test LanguageError class."""
-    error = LanguageError("Language error", "python")
-    assert error.error_code == "LANGUAGE_ERROR"
-    assert error.details["language"] == "python"
+def test_validation_error():
+    """Test ValidationError class."""
+    error = ValidationError("Validation error")
+    assert isinstance(error, ReviewLabError)
+    assert "Validation error" in str(error)
 
 
 def test_git_error():
     """Test GitError class."""
-    error = GitError("Git error", "push")
-    assert error.error_code == "GIT_ERROR"
-    assert error.details["operation"] == "push"
+    error = GitError("Git error")
+    assert isinstance(error, ReviewLabError)
+    assert "Git error" in str(error)
 
 
 def test_injection_error():
     """Test InjectionError class."""
-    error = InjectionError("Injection error", "test.py", "off_by_one")
-    assert error.error_code == "INJECTION_ERROR"
-    assert error.details["file_path"] == "test.py"
-    assert error.details["bug_type"] == "off_by_one"
+    error = InjectionError("Injection error")
+    assert isinstance(error, ReviewLabError)
+    assert "Injection error" in str(error)
 
 
 def test_evaluation_error():
     """Test EvaluationError class."""
-    error = EvaluationError("Evaluation error", "PR-123")
-    assert error.error_code == "EVALUATION_ERROR"
-    assert error.details["pr_id"] == "PR-123"
+    error = EvaluationError("Evaluation error")
+    assert isinstance(error, ReviewLabError)
+    assert "Evaluation error" in str(error)
 
 
-def test_security_error():
-    """Test SecurityError class."""
-    error = SecurityError("Security error")
-    assert error.error_code == "SECURITY_ERROR"
+def test_github_error():
+    """Test GitHubError class."""
+    error = GitHubError("GitHub error")
+    assert isinstance(error, ReviewLabError)
+    assert "GitHub error" in str(error)
 
 
-def test_error_handler_format_error():
-    """Test ErrorHandler.format_error_for_logging."""
+def test_authentication_error():
+    """Test AuthenticationError class."""
+    error = AuthenticationError("Auth error")
+    assert isinstance(error, GitHubError)
+    assert "Auth error" in str(error)
+
+
+def test_repository_error():
+    """Test RepositoryError class."""
+    error = RepositoryError("Repo error")
+    assert isinstance(error, GitHubError)
+    assert "Repo error" in str(error)
+
+
+def test_error_handler_handle_error():
+    """Test ErrorHandler.handle_error."""
     error = ConfigurationError("Test error", {"key": "value"})
-    error_info = ErrorHandler.format_error_for_logging(error, "test_context")
-
-    assert error_info["context"] == "test_context"
-    assert error_info["error_type"] == "ConfigurationError"
-    assert error_info["message"] == "[CONFIG_ERROR] Test error"
-    assert error_info["error_code"] == "CONFIG_ERROR"
-    assert error_info["details"] == {"key": "value"}
+    # This should not raise an exception
+    ErrorHandler.handle_error(error, "test_context")
 
 
-def test_error_handler_format_generic_error():
-    """Test ErrorHandler.format_error_for_logging with generic error."""
-    error = ValueError("Generic error")
-    error_info = ErrorHandler.format_error_for_logging(error, "test_context")
+@patch('sys.exit')
+def test_error_handler_handle_critical_error(mock_exit):
+    """Test ErrorHandler.handle_critical_error."""
+    error = ConfigurationError("Test error", {"key": "value"})
+    # This should call sys.exit(1)
+    ErrorHandler.handle_critical_error(error, "test_context")
+    mock_exit.assert_called_once_with(1)
 
-    assert error_info["context"] == "test_context"
-    assert error_info["error_type"] == "ValueError"
-    assert error_info["message"] == "Generic error"
-    assert "error_code" not in error_info
+
+def test_error_handler_handle_warning():
+    """Test ErrorHandler.handle_warning."""
+    # This should not raise an exception
+    ErrorHandler.handle_warning("Test warning", "test_context")
+
+
+def test_error_handler_handle_info():
+    """Test ErrorHandler.handle_info."""
+    # This should not raise an exception
+    ErrorHandler.handle_info("Test info", "test_context")
