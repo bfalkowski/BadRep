@@ -24,7 +24,7 @@ class GitConfig:
     base_branch: str = "main"
     branch_prefix: str = "bug-injection"
     commit_prefix: str = "feat: Inject bug"
-    pr_title_prefix: str = "🐛 Bug Injection:"
+    pr_title_prefix: str = "Bug Injection:"
     pr_body_template: str = "Automated bug injection for testing purposes"
 
     def __post_init__(self):

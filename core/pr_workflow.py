@@ -22,7 +22,7 @@ class PRWorkflowConfig:
 
     auto_create_pr: bool = True
     auto_push: bool = True
-    pr_title_template: str = "🐛 Bug Injection: {bug_type} in {language} code"
+    pr_title_template: str = "Bug Injection: {bug_type} in {language} code"
     pr_body_template: str = """
 ## Automated Bug Injection
 
@@ -348,7 +348,7 @@ class PRWorkflowManager:
         """Create a pull request for a batch of bug injections."""
         successful_injections = [r for r in results if r.success]
 
-        title = f"🐛 Batch Bug Injection: {len(successful_injections)} bugs in {language} code"
+        title = f"Batch Bug Injection: {len(successful_injections)} bugs in {language} code"
 
         body = f"""
 ## Batch Bug Injection

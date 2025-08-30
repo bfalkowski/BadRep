@@ -218,7 +218,7 @@ def generate_pr(ctx, count, types, seed, title, base, auto_push, dry_run, github
                 branch_name = f"bug-injection/{config.get('language')}-{session_id[:8]}"
                 
                 # Prepare PR details
-                pr_title = title or f"🐛 Inject {len(injected_bugs)} bugs for testing ({session_id[:8]})"
+                pr_title = title or f"Inject {len(injected_bugs)} bugs for testing ({session_id[:8]})"
                 pr_body = f"""## Bug Injection Test PR
 
 This PR contains {len(injected_bugs)} intentionally injected bugs for testing code review bot accuracy.

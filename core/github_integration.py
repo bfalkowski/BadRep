@@ -5,10 +5,11 @@ Handles GitHub API operations including authentication, repository management,
 and pull request creation for bug-injected code.
 """
 
+import base64
 import os
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Any
 
 import click
 from github import Github, GithubException
@@ -16,7 +17,8 @@ from github.Repository import Repository
 from github.Branch import Branch
 from github.PullRequest import PullRequest
 
-from .errors import GitHubError, AuthenticationError, RepositoryError
+from core.exceptions import RepositoryError, AuthenticationError
+from core.config import GitHubConfig
 
 
 class GitHubConfig:
@@ -84,46 +86,142 @@ class GitHubManager:
             raise RepositoryError(f"Failed to create branch {new_branch}: {e}")
 
     def push_files(
-        self, 
-        repo: Repository, 
-        branch: str, 
+        self,
+        repo: Repository,
+        branch: str,
         files: Dict[str, str],
-        commit_message: str
+        commit_message: str,
+        base_tree: Optional[Any] = None
     ) -> str:
-        """Push multiple files to a branch with a single commit."""
+        """Push files to a GitHub branch using Git Data API."""
         try:
-            # Get the current tree of the branch
-            branch_ref = repo.get_branch(branch)
-            base_tree = repo.get_git_tree(branch_ref.commit.sha)
+            # Get the branch reference
+            branch_ref = repo.get_git_ref(f"heads/{branch}")
             
             # Create tree entries for all files
             tree_elements = []
             for file_path, content in files.items():
+                click.echo(f"Creating blob for {file_path}...")
+                
+                # Create a blob for the file content first
+                blob = repo.create_git_blob(content, "utf-8")
+                click.echo(f"Created blob: {blob.sha}")
+                
+                # Reference the blob SHA in the tree (not the content)
                 tree_elements.append({
                     "path": file_path,
                     "mode": "100644",  # Regular file
                     "type": "blob",
-                    "content": content
+                    "sha": blob.sha  # Use blob SHA instead of content
                 })
             
-            # Create the new tree
-            new_tree = repo.create_git_tree(tree_elements, base_tree)
+            click.echo(f"Creating Git tree with {len(tree_elements)} files...")
             
-            # Create the commit
-            commit = repo.create_git_commit(
-                commit_message,
-                new_tree,
-                [branch_ref.commit]
-            )
+            # Create the new tree using direct HTTP requests to GitHub API
+            try:
+                click.echo(f"Attempting to create tree with {len(tree_elements)} elements via direct HTTP...")
+                
+                # Get the GitHub token from the repository object
+                import requests
+                import json
+                
+                # Extract token from PyGithub repository object
+                token = repo._requester._Requester__auth.token
+                owner, repo_name = repo.full_name.split('/')
+                
+                # Prepare the tree creation payload
+                tree_data = {
+                    "tree": tree_elements
+                }
+                if base_tree:
+                    tree_data["base_tree"] = base_tree.sha
+                
+                # Make direct HTTP request to GitHub API
+                headers = {
+                    "Authorization": f"token {token}",
+                    "Accept": "application/vnd.github.v3+json",
+                    "Content-Type": "application/json"
+                }
+                
+                url = f"https://api.github.com/repos/{owner}/{repo_name}/git/trees"
+                
+                click.echo(f"Making HTTP request to: {url}")
+                response = requests.post(url, headers=headers, json=tree_data)
+                
+                if response.status_code == 201:
+                    tree_response = response.json()
+                    new_tree_sha = tree_response["sha"]
+                    click.echo(f"Created Git tree via direct HTTP: {new_tree_sha}")
+                    
+                    # Create a mock tree object for compatibility
+                    class MockTree:
+                        def __init__(self, sha):
+                            self.sha = sha
+                    
+                    new_tree = MockTree(new_tree_sha)
+                else:
+                    click.echo(f"HTTP request failed: {response.status_code}")
+                    click.echo(f"Response: {response.text}")
+                    raise RepositoryError(f"GitHub API returned status {response.status_code}: {response.text}")
+                
+            except Exception as e:
+                click.echo(f"Direct HTTP tree creation failed: {e}")
+                click.echo(f"Tree elements: {tree_elements}")
+                raise RepositoryError(f"Failed to create Git tree via direct HTTP: {e}")
+            
+            # Create the commit using direct HTTP requests to GitHub API
+            try:
+                click.echo(f"Creating Git commit via direct HTTP...")
+                
+                # Prepare the commit creation payload
+                commit_data = {
+                    "message": commit_message,
+                    "tree": new_tree.sha,
+                    "parents": [branch_ref.commit.sha]
+                }
+                
+                # Make direct HTTP request to GitHub API
+                url = f"https://api.github.com/repos/{owner}/{repo_name}/git/commits"
+                
+                click.echo(f"Making HTTP request to: {url}")
+                response = requests.post(url, headers=headers, json=commit_data)
+                
+                if response.status_code == 201:
+                    commit_response = response.json()
+                    commit_sha = commit_response["sha"]
+                    click.echo(f"Created Git commit via direct HTTP: {commit_sha}")
+                    
+                    # Create a mock commit object for compatibility
+                    class MockCommit:
+                        def __init__(self, sha):
+                            self.sha = sha
+                    
+                    commit = MockCommit(commit_sha)
+                else:
+                    click.echo(f"HTTP commit creation failed: {response.status_code}")
+                    click.echo(f"Response: {response.text}")
+                    raise RepositoryError(f"GitHub API returned status {response.status_code}: {response.text}")
+                
+            except Exception as e:
+                click.echo(f"Direct HTTP commit creation failed: {e}")
+                raise RepositoryError(f"Failed to create Git commit via direct HTTP: {e}")
+            
+            click.echo(f"Created Git commit: {commit.sha}")
             
             # Update the branch reference
+            click.echo(f"Updating branch reference for {branch}...")
             repo.get_git_ref(f"heads/{branch}").edit(commit.sha)
+            click.echo(f"Updated branch reference")
             
-            click.echo(f"✅ Pushed {len(files)} files to branch {branch}")
+            # Add a small delay to ensure the branch is updated
+            import time
+            time.sleep(1)
+            
+            click.echo(f"Pushed {len(files)} files to branch {branch}")
             return commit.sha
             
-        except GithubException as e:
-            raise RepositoryError(f"Failed to push files to branch {branch}: {e}")
+        except Exception as e:
+            raise RepositoryError(f"Failed to push files: {e}")
 
     def create_pull_request(
         self,
@@ -258,7 +356,7 @@ class GitHubWorkflow:
             return repo, pr
             
         except Exception as e:
-            raise GitHubError(f"Failed to create bug injection PR: {e}")
+            raise RepositoryError(f"Failed to create bug injection PR: {e}")
 
     def cleanup_branch(self, repo: Repository, branch: str) -> None:
         """Clean up a branch after PR is closed/merged."""
