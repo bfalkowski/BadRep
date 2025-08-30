@@ -17,8 +17,7 @@ from github.Repository import Repository
 from github.Branch import Branch
 from github.PullRequest import PullRequest
 
-from core.exceptions import RepositoryError, AuthenticationError
-from core.config import GitHubConfig
+from core.errors import RepositoryError, AuthenticationError
 
 
 class GitHubConfig:

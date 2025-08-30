@@ -1,0 +1,50 @@
+[
+  {
+    "id": "finding_001",
+    "file_path": "core/bug_injection.py",
+    "line_number": 388,
+    "message": "Invalid type annotation: List[-1]Any is not a valid Python type",
+    "severity": "Error",
+    "category": "Type Error",
+    "confidence": 0.95,
+    "tool": "ReviewLab",
+    "rule_id": "PYT001",
+    "details": "The type annotation List[-1]Any contains an invalid negative index -1, which is not allowed in Python type hints."
+  },
+  {
+    "id": "finding_002", 
+    "file_path": "core/bug_injection.py",
+    "line_number": 388,
+    "message": "Syntax error in type annotation",
+    "severity": "Error",
+    "category": "Syntax Error",
+    "confidence": 0.98,
+    "tool": "ReviewLab",
+    "rule_id": "PYT002",
+    "details": "Type annotation contains invalid syntax that will cause a compilation error."
+  },
+  {
+    "id": "finding_003",
+    "file_path": "core/bug_injection.py", 
+    "line_number": 390,
+    "message": "Function parameter 'template' is used but could be typed more specifically",
+    "severity": "Warning",
+    "category": "Code Quality",
+    "confidence": 0.75,
+    "tool": "ReviewLab",
+    "rule_id": "PYT003",
+    "details": "Consider using a more specific type than 'Any' for better type safety."
+  },
+  {
+    "id": "finding_004",
+    "file_path": "core/bug_injection.py",
+    "line_number": 392,
+    "message": "Return type annotation could be more specific",
+    "severity": "Info",
+    "category": "Code Quality", 
+    "confidence": 0.60,
+    "tool": "ReviewLab",
+    "rule_id": "PYT004",
+    "details": "Return type List[Any] is very generic. Consider using a more specific type."
+  }
+]

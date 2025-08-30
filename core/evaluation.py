@@ -13,7 +13,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
-from core.bug_injection import GroundTruthEntry
+from core.models import GroundTruthEntry
 from core.errors import EvaluationError
 
 
