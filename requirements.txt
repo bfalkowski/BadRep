@@ -1,0 +1,28 @@
+# Core CLI framework
+click>=8.1.0
+
+# Configuration management
+pyyaml>=6.0
+python-dotenv>=1.0.0
+
+# Git operations
+gitpython>=3.1.0
+
+# HTTP requests for API calls
+requests>=2.31.0
+
+# JSON handling and validation
+jsonschema>=4.17.0
+
+# Logging and structured output
+structlog>=23.1.0
+
+# Path handling and file operations
+pathlib2>=2.3.7; python_version < "3.4"
+
+# Development dependencies (optional)
+# pytest>=7.4.0
+# pytest-cov>=4.1.0
+# black>=23.0.0
+# flake8>=6.0.0
+# mypy>=1.5.0

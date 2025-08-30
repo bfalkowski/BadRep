@@ -1,0 +1,73 @@
+# ReviewLab Configuration File
+# This file contains the default configuration for the Bug-Seeded PR Generator
+
+# Global Configuration
+language: java
+verbose: false
+dry_run: false
+
+# Bug Injection Settings
+bug_mix:
+  correctness: 0.3
+  api_misuse: 0.2
+  resource_handling: 0.15
+  security_lite: 0.1
+  maintainability: 0.15
+  test_issues: 0.1
+
+injection:
+  allow_build_breakers: false
+  assistive_markers: false
+  max_bugs_per_file: 3
+  preserve_tests: true
+
+# Git Settings
+git:
+  remote: origin
+  base_branch: main
+  auto_push: true
+  commit_message_template: "feat: {feature} with injected bugs"
+
+# Evaluation Settings
+evaluation:
+  default_matcher: overlap
+  line_tolerance: 2
+  confidence_threshold: 0.7
+  report_formats: [json, markdown]
+
+# Language-Specific Settings
+languages:
+  java:
+    build_tool: maven
+    test_command: "mvn test"
+    source_dir: "src/main/java"
+    
+  python:
+    build_tool: pip
+    test_command: "pytest"
+    source_dir: "src"
+    
+  javascript:
+    build_tool: npm
+    test_command: "npm test"
+    source_dir: "src"
+    
+  go:
+    build_tool: go
+    test_command: "go test ./..."
+    source_dir: "."
+
+# PR Settings
+pr:
+  title_template: "feat: Add {feature} with {bug_count} bugs"
+  body_template: |
+    This PR introduces {feature} functionality.
+    
+    ## Changes Made
+    - Added new feature implementation
+    - Includes {bug_count} intentionally injected bugs for testing
+    
+    ## Testing
+    - [ ] Code review completed
+    - [ ] Tests passing
+    - [ ] Build successful

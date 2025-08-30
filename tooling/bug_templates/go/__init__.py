@@ -1,0 +1,1 @@
+# Go bug templates package

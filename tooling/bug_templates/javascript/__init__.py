@@ -1,0 +1,1 @@
+# JavaScript bug templates package

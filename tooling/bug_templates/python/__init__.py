@@ -1,0 +1,1 @@
+# Python bug templates package

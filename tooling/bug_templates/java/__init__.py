@@ -1,0 +1,1 @@
+# Java bug templates package
