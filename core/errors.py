@@ -1,8 +1,7 @@
 """
-Error handling system for ReviewLab.
+Error handling module for ReviewLab.
 
-Provides custom exception classes and error handling utilities
-for consistent error reporting across the application.
+Defines custom exception classes and error handling utilities.
 """
 
 import sys
@@ -11,206 +10,206 @@ from typing import Any, Dict, Optional
 
 
 class ReviewLabError(Exception):
-    """Base exception class for ReviewLab."""
-
-    def __init__(
-        self, message: str, error_code: str = None, details: Optional[Dict[str, Any]] = None
-    ):
+    """Base exception class for ReviewLab errors."""
+    
+    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None):
+        super().__init__(message)
         self.message = message
-        self.error_code = error_code or "UNKNOWN_ERROR"
         self.details = details or {}
-        super().__init__(self.message)
-
-    def __str__(self):
-        if self.error_code:
-            return f"[{self.error_code}] {self.message}"
+    
+    def __str__(self) -> str:
+        if self.details:
+            return f"{self.message} | Details: {self.details}"
         return self.message
 
 
 class ConfigurationError(ReviewLabError):
-    """Raised when there are configuration-related issues."""
-
-    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None):
-        super().__init__(message, "CONFIG_ERROR", details)
+    """Raised when there's a configuration error."""
+    pass
 
 
-class LanguageError(ReviewLabError):
-    """Raised when there are language-specific issues."""
-
-    def __init__(
-        self, message: str, language: str = None, details: Optional[Dict[str, Any]] = None
-    ):
-        if language:
-            details = details or {}
-            details["language"] = language
-        super().__init__(message, "LANGUAGE_ERROR", details)
-
-
-class GitError(ReviewLabError):
-    """Raised when there are Git operation issues."""
-
-    def __init__(
-        self, message: str, operation: str = None, details: Optional[Dict[str, Any]] = None
-    ):
-        if operation:
-            details = details or {}
-            details["operation"] = operation
-        super().__init__(message, "GIT_ERROR", details)
+class ValidationError(ReviewLabError):
+    """Raised when data validation fails."""
+    pass
 
 
 class InjectionError(ReviewLabError):
-    """Raised when there are bug injection issues."""
-
-    def __init__(
-        self,
-        message: str,
-        file_path: str = None,
-        bug_type: str = None,
-        details: Optional[Dict[str, Any]] = None,
-    ):
-        if file_path or bug_type:
-            details = details or {}
-            if file_path:
-                details["file_path"] = file_path
-            if bug_type:
-                details["bug_type"] = bug_type
-        super().__init__(message, "INJECTION_ERROR", details)
+    """Raised when bug injection fails."""
+    pass
 
 
 class EvaluationError(ReviewLabError):
-    """Raised when there are evaluation issues."""
-
-    def __init__(self, message: str, pr_id: str = None, details: Optional[Dict[str, Any]] = None):
-        if pr_id:
-            details = details or {}
-            details["pr_id"] = pr_id
-        super().__init__(message, "EVALUATION_ERROR", details)
+    """Raised when evaluation fails."""
+    pass
 
 
-class SecurityError(ReviewLabError):
-    """Raised when there are security-related issues."""
+class GitError(ReviewLabError):
+    """Raised when Git operations fail."""
+    pass
 
-    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None):
-        super().__init__(message, "SECURITY_ERROR", details)
+
+class PRWorkflowError(ReviewLabError):
+    """Raised when PR workflow operations fail."""
+    pass
+
+
+class PluginError(ReviewLabError):
+    """Raised when plugin operations fail."""
+    pass
+
+
+class TemplateError(ReviewLabError):
+    """Raised when template operations fail."""
+    pass
+
+
+class ReportError(ReviewLabError):
+    """Raised when report generation fails."""
+    pass
+
+
+class GitHubError(ReviewLabError):
+    """Base exception for GitHub-related errors."""
+    pass
+
+
+class AuthenticationError(GitHubError):
+    """Raised when GitHub authentication fails."""
+    pass
+
+
+class RepositoryError(GitHubError):
+    """Raised when GitHub repository operations fail."""
+    pass
 
 
 class ErrorHandler:
-    """Handles errors and provides user-friendly error reporting."""
-
+    """Centralized error handling for ReviewLab."""
+    
     @staticmethod
     def handle_error(error: Exception, context: str = "Unknown operation") -> None:
-        """
-        Handle an error and provide user-friendly reporting.
-
-        Args:
-            error: The exception that occurred
-            context: Context about what operation was being performed
-        """
-        if isinstance(error, ReviewLabError):
-            ErrorHandler._handle_reviewlab_error(error, context)
-        else:
-            ErrorHandler._handle_generic_error(error, context)
-
-    @staticmethod
-    def _handle_reviewlab_error(error: ReviewLabError, context: str):
-        """Handle ReviewLab-specific errors."""
-        print(f"❌ Error in {context}: {error}", file=sys.stderr)
-
-        if error.details:
-            print("\n📋 Error Details:", file=sys.stderr)
-            for key, value in error.details.items():
-                print(f"  {key}: {value}", file=sys.stderr)
-
-        # Provide helpful suggestions based on error type
-        ErrorHandler._provide_suggestions(error)
-
-    @staticmethod
-    def _handle_generic_error(error: Exception, context: str):
-        """Handle generic Python exceptions."""
-        print(f"❌ Unexpected error in {context}: {error}", file=sys.stderr)
-
-        if hasattr(error, "__traceback__"):
-            print("\n🔍 Full traceback:", file=sys.stderr)
+        """Handle an error with proper formatting and context."""
+        error_type = type(error).__name__
+        
+        # Print error header
+        print(f"\n❌ Error in {context}")
+        print(f"🔍 Type: {error_type}")
+        print(f"💬 Message: {str(error)}")
+        
+        # Print details if available
+        if hasattr(error, 'details') and error.details:
+            print(f"📋 Details: {error.details}")
+        
+        # Print traceback in verbose mode
+        if hasattr(error, 'verbose') and error.verbose:
+            print(f"\n🔍 Full traceback:")
             traceback.print_exc()
-
+        
+        # Print helpful suggestions based on error type
+        ErrorHandler._print_suggestions(error_type, context)
+    
     @staticmethod
-    def _provide_suggestions(error: ReviewLabError):
-        """Provide helpful suggestions based on error type."""
+    def _print_suggestions(error_type: str, context: str) -> None:
+        """Print helpful suggestions based on error type."""
         suggestions = {
-            "CONFIG_ERROR": [
-                "Check that your configuration file exists and is valid YAML",
-                "Verify that all required configuration keys are present",
-                "Check environment variable syntax (REVIEWLAB_*)",
+            "ConfigurationError": [
+                "Check your configuration file",
+                "Verify environment variables are set",
+                "Ensure all required fields are present"
             ],
-            "LANGUAGE_ERROR": [
-                "Ensure the specified language is supported (java, python, javascript, go)",
-                "Check that language-specific tools are installed",
-                "Verify the language configuration in your config file",
+            "ValidationError": [
+                "Check input data format",
+                "Verify required fields are provided",
+                "Ensure data meets validation rules"
             ],
-            "GIT_ERROR": [
-                "Ensure you're in a git repository",
-                "Check that you have the necessary git permissions",
-                "Verify your remote configuration",
+            "InjectionError": [
+                "Check bug template syntax",
+                "Verify target file exists and is writable",
+                "Ensure language plugin is properly configured"
             ],
-            "INJECTION_ERROR": [
-                "Check that the target file exists and is readable",
-                "Verify that the bug template is valid",
-                "Ensure the file syntax is correct for the target language",
+            "GitError": [
+                "Check Git repository status",
+                "Verify you have write permissions",
+                "Ensure branch names are valid"
             ],
-            "EVALUATION_ERROR": [
-                "Verify that the PR ID exists",
-                "Check that the findings file is valid JSON",
-                "Ensure ground truth data is available",
+            "AuthenticationError": [
+                "Check your GitHub token is valid",
+                "Verify token has required permissions",
+                "Ensure username is correct"
             ],
-            "SECURITY_ERROR": [
-                "Check file paths for directory traversal attempts",
-                "Verify that templates don't contain dangerous code",
-                "Review API key usage and permissions",
-            ],
+            "RepositoryError": [
+                "Check repository exists and is accessible",
+                "Verify you have write permissions",
+                "Ensure branch names are valid"
+            ]
         }
-
-        error_type = error.error_code
+        
         if error_type in suggestions:
-            print(f"\n💡 Suggestions for {error_type}:", file=sys.stderr)
+            print(f"\n💡 Suggestions:")
             for suggestion in suggestions[error_type]:
-                print(f"  • {suggestion}", file=sys.stderr)
-
+                print(f"   • {suggestion}")
+    
     @staticmethod
-    def format_error_for_logging(error: Exception, context: str = "Unknown") -> Dict[str, Any]:
-        """
-        Format an error for structured logging.
-
-        Returns:
-            Dictionary with error information suitable for logging
-        """
-        error_info = {
-            "context": context,
-            "error_type": type(error).__name__,
-            "message": str(error),
-            "timestamp": None,  # Will be filled by logging system
-        }
-
-        if isinstance(error, ReviewLabError):
-            error_info.update({"error_code": error.error_code, "details": error.details})
-
-        return error_info
+    def handle_critical_error(error: Exception, context: str = "Critical operation") -> None:
+        """Handle a critical error that requires immediate exit."""
+        ErrorHandler.handle_error(error, context)
+        print(f"\n💥 Critical error in {context}. Exiting.")
+        sys.exit(1)
+    
+    @staticmethod
+    def handle_warning(warning: str, context: str = "Operation") -> None:
+        """Handle a warning with proper formatting."""
+        print(f"\n⚠️  Warning in {context}")
+        print(f"💬 {warning}")
+    
+    @staticmethod
+    def handle_info(info: str, context: str = "Operation") -> None:
+        """Handle informational messages."""
+        print(f"\nℹ️  {context}: {info}")
 
 
-def handle_errors(func):
-    """
-    Decorator to automatically handle errors in functions.
+def require_condition(condition: bool, message: str, error_type: type = ReviewLabError) -> None:
+    """Require a condition to be true, otherwise raise an error."""
+    if not condition:
+        raise error_type(message)
 
-    Usage:
-        @handle_errors
-        def my_function():
-            # ... function code ...
-    """
 
-    def wrapper(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except Exception as e:
-            ErrorHandler.handle_error(e, f"Function {func.__name__}")
-            raise
+def require_not_none(value: Any, message: str, error_type: type = ReviewLabError) -> None:
+    """Require a value to not be None, otherwise raise an error."""
+    if value is None:
+        raise error_type(message)
 
-    return wrapper
+
+def require_file_exists(file_path: str, error_type: type = ReviewLabError) -> None:
+    """Require a file to exist, otherwise raise an error."""
+    from pathlib import Path
+    if not Path(file_path).exists():
+        raise error_type(f"File does not exist: {file_path}")
+
+
+def require_directory_exists(dir_path: str, error_type: type = ReviewLabError) -> None:
+    """Require a directory to exist, otherwise raise an error."""
+    from pathlib import Path
+    if not Path(dir_path).exists():
+        raise error_type(f"Directory does not exist: {dir_path}")
+
+
+def require_valid_language(language: str, error_type: type = ValidationError) -> None:
+    """Require a valid language, otherwise raise an error."""
+    valid_languages = ["java", "python", "javascript", "go"]
+    if language not in valid_languages:
+        raise error_type(f"Invalid language: {language}. Must be one of: {valid_languages}")
+
+
+def require_valid_severity(severity: str, error_type: type = ValidationError) -> None:
+    """Require a valid severity level, otherwise raise an error."""
+    valid_severities = ["low", "medium", "high", "critical"]
+    if severity not in valid_severities:
+        raise error_type(f"Invalid severity: {severity}. Must be one of: {valid_severities}")
+
+
+def require_valid_difficulty(difficulty: str, error_type: type = ValidationError) -> None:
+    """Require a valid difficulty level, otherwise raise an error."""
+    valid_difficulties = ["easy", "medium", "hard", "expert"]
+    if difficulty not in valid_difficulties:
+        raise error_type(f"Invalid difficulty: {difficulty}. Must be one of: {valid_difficulties}")
