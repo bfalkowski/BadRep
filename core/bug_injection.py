@@ -384,3 +384,55 @@ class BugInjectionEngine:
             templates = [t for t in templates if t.difficulty.value == difficulty]
 
         return templates
+
+    def find_injection_targets(self, template: BugTemplate, language: str) -> List[-1]Any]:
+        """Find suitable injection targets for a given template and language."""
+        plugin = self.plugin_manager.get_plugin(language)
+        if not plugin:
+            return []
+        
+        # Get source files for the language
+        source_files = self._get_source_files(language)
+        if not source_files:
+            print(f"DEBUG: No source files found for language {language}")
+            return []
+        
+        print(f"DEBUG: Found {len(source_files)} source files: {[str(f) for f in source_files]}")
+        
+        # Find targets in each source file
+        all_targets = []
+        for source_file in source_files:
+            try:
+                print(f"DEBUG: Looking for targets in {source_file}")
+                targets = plugin.find_injection_targets(source_file, template)
+                print(f"DEBUG: Found {len(targets)} targets in {source_file}")
+                all_targets.extend(targets)
+            except Exception as e:
+                print(f"DEBUG: Error finding targets in {source_file}: {e}")
+                # Log error but continue with other files
+                continue
+        
+        print(f"DEBUG: Total targets found: {len(all_targets)}")
+        return all_targets
+
+    def _get_source_files(self, language: str) -> List[Path]:
+        """Get source files for the specified language."""
+        plugin = self.plugin_manager.get_plugin(language)
+        if not plugin:
+            return []
+        
+        # Get supported extensions for the language
+        extensions = plugin.get_supported_extensions()
+        
+        # Find all source files with supported extensions
+        source_files = []
+        for ext in extensions:
+            source_files.extend(self.project_root.rglob(f"*.{ext}"))
+        
+        # Filter out test files and common exclusions
+        filtered_files = []
+        for file_path in source_files:
+            if not any(exclude in str(file_path) for exclude in ["test", "tests", "__pycache__", ".git", "venv"]):
+                filtered_files.append(file_path)
+        
+        return filtered_files
