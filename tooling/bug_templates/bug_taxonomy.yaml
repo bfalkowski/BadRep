@@ -1,0 +1,266 @@
+# ReviewLab Bug Taxonomy
+# This file defines the complete taxonomy of bugs that can be injected into baseline projects
+
+bug_categories:
+  correctness:
+    name: "Correctness Bugs"
+    description: "Bugs that cause incorrect results or behavior"
+    severity: "HIGH"
+    detection_difficulty: "MEDIUM"
+    examples:
+      - "Off-by-one errors in loops"
+      - "Incorrect arithmetic operations"
+      - "Wrong comparison operators"
+      - "Missing null checks"
+    
+    types:
+      arithmetic:
+        name: "Arithmetic Errors"
+        description: "Mathematical calculation mistakes"
+        patterns:
+          - "off_by_one"
+          - "wrong_operator"
+          - "missing_operation"
+          - "incorrect_precedence"
+      
+      logic:
+        name: "Logic Errors"
+        description: "Flawed conditional logic or control flow"
+        patterns:
+          - "wrong_condition"
+          - "missing_condition"
+          - "inverted_logic"
+          - "dead_code"
+      
+      boundary:
+        name: "Boundary Errors"
+        description: "Edge case handling mistakes"
+        patterns:
+          - "array_bounds"
+          - "null_pointer"
+          - "empty_collection"
+          - "zero_division"
+
+  api_misuse:
+    name: "API Misuse"
+    description: "Incorrect usage of language or library APIs"
+    severity: "MEDIUM"
+    detection_difficulty: "LOW"
+    examples:
+      - "Wrong method parameters"
+      - "Missing required arguments"
+      - "Incorrect exception handling"
+      - "Resource leak patterns"
+    
+    types:
+      method_call:
+        name: "Method Call Errors"
+        description: "Incorrect method invocations"
+        patterns:
+          - "wrong_parameters"
+          - "missing_parameters"
+          - "wrong_order"
+          - "null_parameters"
+      
+      exception_handling:
+        name: "Exception Handling Errors"
+        description: "Improper exception management"
+        patterns:
+          - "swallowed_exception"
+          - "wrong_exception_type"
+          - "missing_try_catch"
+          - "incomplete_cleanup"
+
+  resource_handling:
+    name: "Resource Handling"
+    description: "Memory, file, or connection management issues"
+    severity: "HIGH"
+    detection_difficulty: "HIGH"
+    examples:
+      - "Memory leaks"
+      - "Unclosed file handles"
+      - "Connection pool exhaustion"
+      - "Resource cleanup failures"
+    
+    types:
+      memory:
+        name: "Memory Management"
+        description: "Memory allocation and deallocation issues"
+        patterns:
+          - "memory_leak"
+          - "double_free"
+          - "use_after_free"
+          - "buffer_overflow"
+      
+      file_io:
+        name: "File I/O Errors"
+        description: "File handling and stream management issues"
+        patterns:
+          - "unclosed_stream"
+          - "missing_cleanup"
+          - "wrong_file_mode"
+          - "path_traversal"
+
+  security_lite:
+    name: "Security Issues (Lite)"
+    description: "Security vulnerabilities that don't require deep analysis"
+    severity: "MEDIUM"
+    detection_difficulty: "MEDIUM"
+    examples:
+      - "Hardcoded credentials"
+      - "Insecure random number generation"
+      - "Missing input validation"
+      - "Information disclosure"
+    
+    types:
+      authentication:
+        name: "Authentication Issues"
+        description: "Credential and authentication problems"
+        patterns:
+          - "hardcoded_password"
+          - "weak_encryption"
+          - "missing_validation"
+          - "session_fixation"
+      
+      input_validation:
+        name: "Input Validation Issues"
+        description: "Missing or insufficient input checking"
+        patterns:
+          - "missing_sanitization"
+          - "incomplete_validation"
+          - "wrong_validation"
+          - "bypass_validation"
+
+  maintainability:
+    name: "Maintainability Issues"
+    description: "Code quality and maintainability problems"
+    severity: "LOW"
+    detection_difficulty: "LOW"
+    examples:
+      - "Code duplication"
+      - "Complex methods"
+      - "Poor naming conventions"
+      - "Missing documentation"
+    
+    types:
+      code_quality:
+        name: "Code Quality Issues"
+        description: "Structural and style problems"
+        patterns:
+          - "duplicate_code"
+          - "long_method"
+          - "complex_condition"
+          - "magic_numbers"
+      
+      documentation:
+        name: "Documentation Issues"
+        description: "Missing or incorrect documentation"
+        patterns:
+          - "missing_comment"
+          - "wrong_comment"
+          - "outdated_doc"
+          - "incomplete_api_doc"
+
+  test_issues:
+    name: "Testing Issues"
+    description: "Problems with test code or test coverage"
+    severity: "MEDIUM"
+    detection_difficulty: "LOW"
+    examples:
+      - "Fragile tests"
+      - "Missing test cases"
+      - "Incorrect assertions"
+      - "Test data issues"
+    
+    types:
+      test_quality:
+        name: "Test Quality Issues"
+        description: "Problems with test implementation"
+        patterns:
+          - "fragile_test"
+          - "missing_assertion"
+          - "wrong_assertion"
+          - "incomplete_coverage"
+      
+      test_data:
+        name: "Test Data Issues"
+        description: "Problems with test input or setup"
+        patterns:
+          - "hardcoded_data"
+          - "missing_setup"
+          - "wrong_test_data"
+          - "incomplete_teardown"
+
+# Bug injection patterns and their characteristics
+injection_patterns:
+  off_by_one:
+    name: "Off-by-One Error"
+    description: "Loop or array access that is off by one position"
+    difficulty: "EASY"
+    realism: "HIGH"
+    detection_rate: "HIGH"
+  
+  wrong_operator:
+    name: "Wrong Operator"
+    description: "Using incorrect arithmetic or logical operator"
+    difficulty: "EASY"
+    realism: "HIGH"
+    detection_rate: "HIGH"
+  
+  missing_condition:
+    name: "Missing Condition"
+    description: "Omitting a necessary conditional check"
+    difficulty: "MEDIUM"
+    realism: "HIGH"
+    detection_rate: "MEDIUM"
+  
+  null_pointer:
+    name: "Null Pointer Access"
+    description: "Accessing methods or properties on null objects"
+    difficulty: "MEDIUM"
+    realism: "HIGH"
+    detection_rate: "HIGH"
+  
+  memory_leak:
+    name: "Memory Leak"
+    description: "Failing to release allocated memory"
+    difficulty: "HARD"
+    realism: "HIGH"
+    detection_rate: "LOW"
+  
+  hardcoded_password:
+    name: "Hardcoded Password"
+    description: "Embedding passwords directly in source code"
+    difficulty: "EASY"
+    realism: "MEDIUM"
+    detection_rate: "HIGH"
+
+# Language-specific bug patterns
+language_patterns:
+  java:
+    - "null_pointer_exception"
+    - "array_index_out_of_bounds"
+    - "class_cast_exception"
+    - "concurrent_modification"
+    - "resource_leak"
+  
+  python:
+    - "attribute_error"
+    - "index_error"
+    - "type_error"
+    - "name_error"
+    - "indentation_error"
+  
+  javascript:
+    - "type_error"
+    - "reference_error"
+    - "syntax_error"
+    - "undefined_access"
+    - "async_await_mistake"
+  
+  go:
+    - "nil_pointer_dereference"
+    - "index_out_of_range"
+    - "type_assertion_failure"
+    - "goroutine_leak"
+    - "channel_deadlock"

@@ -1,0 +1,128 @@
+# Java Arithmetic Bug Templates
+# These templates define common arithmetic bugs that can be injected into Java code
+
+- id: "java_off_by_one_loop"
+  name: "Off-by-One Loop Error"
+  description: "Loop that iterates one time too many or too few due to boundary condition error"
+  category: "correctness"
+  severity: "high"
+  difficulty: "easy"
+  patterns:
+    - "off_by_one"
+    - "boundary_error"
+  tags:
+    - "loop"
+    - "boundary"
+    - "arithmetic"
+  examples:
+    - "for (int i = 0; i <= array.length; i++) // Should be < not <="
+    - "for (int i = 1; i < array.length; i++) // Should start at 0"
+  detection_hints:
+    - "Check loop boundary conditions"
+    - "Verify loop start and end indices"
+    - "Look for <= vs < comparisons in loops"
+
+- id: "java_wrong_operator"
+  name: "Wrong Arithmetic Operator"
+  description: "Using incorrect arithmetic operator (e.g., + instead of *, / instead of %)"
+  category: "correctness"
+  severity: "high"
+  difficulty: "easy"
+  patterns:
+    - "wrong_operator"
+    - "arithmetic_error"
+  tags:
+    - "operator"
+    - "arithmetic"
+    - "calculation"
+  examples:
+    - "result = a + b; // Should be * for multiplication"
+    - "remainder = a / b; // Should be % for modulo"
+  detection_hints:
+    - "Verify arithmetic operations match intended logic"
+    - "Check operator precedence"
+    - "Look for common operator confusion patterns"
+
+- id: "java_missing_operation"
+  name: "Missing Arithmetic Operation"
+  description: "Omitting a required arithmetic operation or step in calculation"
+  category: "correctness"
+  severity: "medium"
+  difficulty: "medium"
+  patterns:
+    - "missing_operation"
+    - "incomplete_calculation"
+  tags:
+    - "missing"
+    - "arithmetic"
+    - "calculation"
+  examples:
+    - "result = a + b; // Missing multiplication by factor"
+    - "total = sum; // Missing division by count"
+  detection_hints:
+    - "Verify calculation completeness"
+    - "Check for missing factors or divisors"
+    - "Look for incomplete mathematical formulas"
+
+- id: "java_precedence_error"
+  name: "Operator Precedence Error"
+  description: "Incorrect understanding of operator precedence leading to wrong calculation order"
+  category: "correctness"
+  severity: "medium"
+  difficulty: "medium"
+  patterns:
+    - "precedence_error"
+    - "order_of_operations"
+  tags:
+    - "precedence"
+    - "operator"
+    - "arithmetic"
+  examples:
+    - "result = a + b * c; // Should be (a + b) * c"
+    - "value = a / b + c; // Should be a / (b + c)"
+  detection_hints:
+    - "Check operator precedence rules"
+    - "Verify parentheses placement"
+    - "Look for complex expressions without proper grouping"
+
+- id: "java_zero_division"
+  name: "Division by Zero"
+  description: "Attempting to divide by zero without proper validation"
+  category: "correctness"
+  severity: "high"
+  difficulty: "easy"
+  patterns:
+    - "zero_division"
+    - "boundary_error"
+  tags:
+    - "division"
+    - "zero"
+    - "exception"
+  examples:
+    - "result = a / b; // Missing check for b == 0"
+    - "quotient = numerator / denominator; // No validation"
+  detection_hints:
+    - "Look for division operations without zero checks"
+    - "Check for proper exception handling"
+    - "Verify input validation for divisors"
+
+- id: "java_overflow_error"
+  name: "Integer Overflow"
+  description: "Arithmetic operation that exceeds the range of the data type"
+  category: "correctness"
+  severity: "medium"
+  difficulty: "medium"
+  patterns:
+    - "overflow"
+    - "range_error"
+  tags:
+    - "overflow"
+    - "integer"
+    - "range"
+  examples:
+    - "int result = a * b; // May overflow for large values"
+    - "long factorial = 1; for (int i = 1; i <= n; i++) factorial *= i;"
+  detection_hints:
+    - "Check for operations on large numbers"
+    - "Look for factorial or power calculations"
+    - "Verify data type ranges"

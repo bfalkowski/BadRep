@@ -1,0 +1,171 @@
+# Python Arithmetic Bug Templates
+# These templates define common arithmetic bugs that can be injected into Python code
+
+- id: "python_off_by_one_range"
+  name: "Off-by-One Range Error"
+  description: "Range or loop that iterates one time too many or too few due to boundary condition error"
+  category: "correctness"
+  severity: "high"
+  difficulty: "easy"
+  patterns:
+    - "off_by_one"
+    - "boundary_error"
+  tags:
+    - "range"
+    - "loop"
+    - "boundary"
+    - "arithmetic"
+  examples:
+    - "for i in range(len(array)): # Should be range(len(array) - 1)"
+    - "for i in range(1, len(array)): # Should start at 0"
+  detection_hints:
+    - "Check range boundary conditions"
+    - "Verify loop start and end indices"
+    - "Look for range(len()) vs range(len() - 1) patterns"
+
+- id: "python_wrong_operator"
+  name: "Wrong Arithmetic Operator"
+  description: "Using incorrect arithmetic operator (e.g., + instead of *, / instead of //)"
+  category: "correctness"
+  severity: "high"
+  difficulty: "easy"
+  patterns:
+    - "wrong_operator"
+    - "arithmetic_error"
+  tags:
+    - "operator"
+    - "arithmetic"
+    - "calculation"
+  examples:
+    - "result = a + b  # Should be * for multiplication"
+    - "quotient = a / b  # Should be // for integer division"
+  detection_hints:
+    - "Verify arithmetic operations match intended logic"
+    - "Check operator precedence"
+    - "Look for common operator confusion patterns"
+
+- id: "python_missing_operation"
+  name: "Missing Arithmetic Operation"
+  description: "Omitting a required arithmetic operation or step in calculation"
+  category: "correctness"
+  severity: "medium"
+  difficulty: "medium"
+  patterns:
+    - "missing_operation"
+    - "incomplete_calculation"
+  tags:
+    - "missing"
+    - "arithmetic"
+    - "calculation"
+  examples:
+    - "result = a + b  # Missing multiplication by factor"
+    - "total = sum  # Missing division by count"
+  detection_hints:
+    - "Verify calculation completeness"
+    - "Check for missing factors or divisors"
+    - "Look for incomplete mathematical formulas"
+
+- id: "python_precedence_error"
+  name: "Operator Precedence Error"
+  description: "Incorrect understanding of operator precedence leading to wrong calculation order"
+  category: "correctness"
+  severity: "medium"
+  difficulty: "medium"
+  patterns:
+    - "precedence_error"
+    - "order_of_operations"
+  tags:
+    - "precedence"
+    - "operator"
+    - "arithmetic"
+  examples:
+    - "result = a + b * c  # Should be (a + b) * c"
+    - "value = a / b + c  # Should be a / (b + c)"
+  detection_hints:
+    - "Check operator precedence rules"
+    - "Verify parentheses placement"
+    - "Look for complex expressions without proper grouping"
+
+- id: "python_zero_division"
+  name: "Division by Zero"
+  description: "Attempting to divide by zero without proper validation"
+  category: "correctness"
+  severity: "high"
+  difficulty: "easy"
+  patterns:
+    - "zero_division"
+    - "boundary_error"
+  tags:
+    - "division"
+    - "zero"
+    - "exception"
+  examples:
+    - "result = a / b  # Missing check for b == 0"
+    - "quotient = numerator / denominator  # No validation"
+  detection_hints:
+    - "Look for division operations without zero checks"
+    - "Check for proper exception handling"
+    - "Verify input validation for divisors"
+
+- id: "python_type_error"
+  name: "Type Error in Arithmetic"
+  description: "Performing arithmetic operations on incompatible types"
+  category: "correctness"
+  severity: "medium"
+  difficulty: "easy"
+  patterns:
+    - "type_error"
+    - "type_mismatch"
+  tags:
+    - "type"
+    - "arithmetic"
+    - "error"
+  examples:
+    - "result = a + b  # Where a is string and b is number"
+    - "product = x * y  # Where x is list and y is number"
+  detection_hints:
+    - "Check operand types before arithmetic operations"
+    - "Look for string concatenation vs addition confusion"
+    - "Verify type compatibility"
+
+- id: "python_float_precision"
+  name: "Floating Point Precision Error"
+  description: "Incorrect handling of floating point arithmetic leading to precision issues"
+  category: "correctness"
+  severity: "medium"
+  difficulty: "medium"
+  patterns:
+    - "float_precision"
+    - "rounding_error"
+  tags:
+    - "float"
+    - "precision"
+    - "arithmetic"
+  examples:
+    - "if a == b:  # Should use abs(a - b) < epsilon for floats"
+    - "result = 0.1 + 0.2  # May not equal 0.3 exactly"
+  detection_hints:
+    - "Use epsilon comparison for float equality"
+    - "Check for floating point arithmetic precision issues"
+    - "Look for direct float comparisons"
+
+- id: "python_negative_index"
+  name: "Negative Index Error"
+  description: "Using negative indices incorrectly in arithmetic operations"
+  category: "correctness"
+  severity: "medium"
+  difficulty: "easy"
+  patterns:
+    - "negative_index"
+    - "boundary_error"
+  tags:
+    - "index"
+    - "negative"
+    - "array"
+  examples:
+    - "value = array[-1]  # May cause IndexError if array is empty"
+    - "result = array[i] where i < 0  # Unexpected behavior"
+  detection_hints:
+    - "Check for negative index usage"
+    - "Verify array bounds before indexing"
+    - "Look for empty array handling"
