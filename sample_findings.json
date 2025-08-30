@@ -1,0 +1,35 @@
+[
+  {
+    "id": "finding_001",
+    "file_path": "src/Calculator.java",
+    "line_number": 25,
+    "finding_type": "bug",
+    "severity": "high",
+    "confidence": 0.9,
+    "message": "Potential null pointer dereference",
+    "rule_id": "NP_NULL_ON_SOME_PATH",
+    "category": "correctness"
+  },
+  {
+    "id": "finding_002",
+    "file_path": "src/ArrayProcessor.java",
+    "line_number": 42,
+    "finding_type": "bug",
+    "severity": "medium",
+    "confidence": 0.8,
+    "message": "Array index out of bounds",
+    "rule_id": "AI_ANNOTATION_ISSUES",
+    "category": "correctness"
+  },
+  {
+    "id": "finding_003",
+    "file_path": "src/Calculator.java",
+    "line_number": 30,
+    "finding_type": "bug",
+    "severity": "low",
+    "confidence": 0.6,
+    "message": "Unused variable warning",
+    "rule_id": "URF_UNREAD_FIELD",
+    "category": "style"
+  }
+]
