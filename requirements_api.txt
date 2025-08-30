@@ -1,0 +1,15 @@
+# ReviewLab API Server Dependencies
+# FastAPI and related packages for the agentic system
+
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+
+# Optional: Additional FastAPI features
+python-multipart>=0.0.6  # For file uploads
+python-jose[cryptography]>=3.3.0  # For JWT authentication (future)
+passlib[bcrypt]>=1.7.4  # For password hashing (future)
+
+# Existing dependencies (ensure compatibility)
+PyGithub>=1.59.0
+requests>=2.31.0
