@@ -1,0 +1,45 @@
+{
+  "name": "reviewlab-calculator",
+  "version": "1.0.0",
+  "description": "Baseline JavaScript project for bug injection testing in ReviewLab",
+  "main": "src/calculator.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:verbose": "jest --verbose",
+    "start": "node src/calculator.js",
+    "lint": "eslint src/ tests/",
+    "lint:fix": "eslint src/ tests/ --fix"
+  },
+  "keywords": [
+    "calculator",
+    "baseline",
+    "testing",
+    "reviewlab"
+  ],
+  "author": "ReviewLab Team",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "eslint": "^8.55.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/**/*.test.js"
+    ],
+    "coverageReporters": [
+      "text",
+      "html",
+      "lcov"
+    ],
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ]
+  }
+}
