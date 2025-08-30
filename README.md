@@ -2,8 +2,8 @@
 
 **Agentic Bug-Seeded PR Generator + Review-Accuracy Evaluator with REST API**
 
-[![CI - Test & Quality](https://github.com/bfalkowski/BadRep/workflows/CI%20-%20Test%20%26%20Quality/badge.svg)](https://github.com/bfalkowski/BadRep/actions)
-[![Release](https://github.com/bfalkowski/BadRep/workflows/Release/badge.svg)](https://github.com/bfalkowski/BadRep/releases)
+[![CI - Test & Quality](https://github.com/bfalkowski/ReviewLab/workflows/CI%20-%20Test%20%26%20Quality/badge.svg)](https://github.com/bfalkowski/ReviewLab/actions)
+[![Release](https://github.com/bfalkowski/ReviewLab/workflows/Release/badge.svg)](https://github.com/bfalkowski/ReviewLab/releases)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -73,8 +73,8 @@ ReviewLab is a **production-ready, agentic system** for testing code review bot 
 
 ```bash
 # Clone the repository
-git clone https://github.com/bfalkowski/BadRep.git
-cd BadRep
+git clone https://github.com/bfalkowski/ReviewLab.git
+cd ReviewLab
 
 # Install API dependencies
 pip install -r requirements_api.txt
@@ -95,7 +95,7 @@ python start_api_server.py
 curl http://localhost:8000/health
 
 # Extract GitHub comments from a PR
-curl http://localhost:8000/api/v1/github/prs/bfalkowski/BadRep/1/comments
+curl http://localhost:8000/api/v1/github/prs/bfalkowski/ReviewLab/1/comments
 
 # Evaluate findings against ground truth
 curl -X POST http://localhost:8000/api/v1/evaluate/findings \
@@ -290,7 +290,7 @@ python test_api.py
 
 # Test individual endpoints
 curl http://localhost:8000/health
-curl http://localhost:8000/api/v1/github/prs/bfalkowski/BadRep/1/comments
+curl http://localhost:8000/api/v1/github/prs/bfalkowski/ReviewLab/1/comments
 ```
 
 ### **Running Tests**
@@ -482,10 +482,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/bfalkowski/BadRep/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/bfalkowski/BadRep/discussions)
+- **Issues**: [GitHub Issues](https://github.com/bfalkowski/ReviewLab/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/bfalkowski/ReviewLab/discussions)
 - **Security**: security@reviewlab.dev
-- **Documentation**: [Project Wiki](https://github.com/bfalkowski/BadRep/wiki)
+- **Documentation**: [Project Wiki](https://github.com/bfalkowski/ReviewLab/wiki)
 - **API Status**: http://localhost:8000/health (when running)
 
 ---

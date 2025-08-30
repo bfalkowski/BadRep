@@ -76,7 +76,7 @@ python test_api.py
 
 # Or test individual endpoints
 curl http://localhost:8000/health
-curl http://localhost:8000/api/v1/github/prs/bfalkowski/BadRep/1/comments
+curl http://localhost:8000/api/v1/github/prs/bfalkowski/ReviewLab/1/comments
 ```
 
 ### **3. Current Working Workflow**
