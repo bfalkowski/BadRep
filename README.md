@@ -2,8 +2,8 @@
 
 **Agentic Bug-Seeded PR Generator + Review-Accuracy Evaluator with REST API**
 
-[![CI - Test & Quality](https://github.com/bryanfalkowski/reviewlab/workflows/CI%20-%20Test%20%26%20Quality/badge.svg)](https://github.com/bryanfalkowski/reviewlab/actions)
-[![Release](https://github.com/bryanfalkowski/reviewlab/workflows/Release/badge.svg)](https://github.com/bryanfalkowski/reviewlab/releases)
+[![CI - Test & Quality](https://github.com/bfalkowski/BadRep/workflows/CI%20-%20Test%20%26%20Quality/badge.svg)](https://github.com/bfalkowski/BadRep/actions)
+[![Release](https://github.com/bfalkowski/BadRep/workflows/Release/badge.svg)](https://github.com/bfalkowski/BadRep/releases)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -73,8 +73,8 @@ ReviewLab is a **production-ready, agentic system** for testing code review bot 
 
 ```bash
 # Clone the repository
-git clone https://github.com/bryanfalkowski/reviewlab.git
-cd reviewlab
+git clone https://github.com/bfalkowski/BadRep.git
+cd BadRep
 
 # Install API dependencies
 pip install -r requirements_api.txt
@@ -482,10 +482,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/bryanfalkowski/reviewlab/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/bryanfalkowski/reviewlab/discussions)
+- **Issues**: [GitHub Issues](https://github.com/bfalkowski/BadRep/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/bfalkowski/BadRep/discussions)
 - **Security**: security@reviewlab.dev
-- **Documentation**: [Project Wiki](https://github.com/bryanfalkowski/reviewlab/wiki)
+- **Documentation**: [Project Wiki](https://github.com/bfalkowski/BadRep/wiki)
 - **API Status**: http://localhost:8000/health (when running)
 
 ---
